@@ -16,7 +16,7 @@ LDFLAGS += -lm -lstdc++
 
 # C and C++ Compiler flags
 CFLAGS += -Wall						# Include all warnings
-# CFLAGS += -g						# Generate GDB debugger information
+CFLAGS += -g						# Generate GDB debugger information
 CFLAGS += -o2
 CFLAGS += -Wno-strict-aliasing		# Disable warnings about strict aliasing
 CFLAGS += -DNDEBUG					# Disable assert() macro

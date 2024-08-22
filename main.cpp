@@ -7,9 +7,10 @@
 uint8_t image_rgb888_packed[FRAME_BUFFER_COLS * FRAME_BUFFER_ROWS * 3] = {0};
 uint8_t resized_image[FRAME_BUFFER_COLS * FRAME_BUFFER_ROWS * 3] = {0}; // buffer for resized image
 
-int main()
+using namespace ei::image::processing;
+
+int test_resize(fit_mode_t mode)
 {
-    using namespace ei::image::processing;
     // fill frame buffer with some example data... This is normally done by the camera.
     for (size_t row = 0; row < FRAME_BUFFER_ROWS; row++)
     {
@@ -32,7 +33,6 @@ int main()
     int desiredWidth = 200; // desired width for resized image
     int desiredHeight = 200; // desired height for resized image
     int pixelSize = 3; // pixel size in bytes, 3 for RGB
-    fit_mode_t mode = FIT_SHORTEST; // resizing mode
 
     int res = resize_image_using_mode(
         image_rgb888_packed,
@@ -51,4 +51,12 @@ int main()
 
     b = create_bitmap_file("resized.bmp", resized_image, desiredWidth, desiredHeight);
     printf("created resized.bmp, result code: %d\n", b);
+
+    return res;
+}
+
+int main() {
+    // test_resize(FIT_SHORTEST);
+    test_resize(FIT_LONGEST);
+    // test_resize(FIT_SHORTEST);
 }
