@@ -5,11 +5,11 @@
 #define FRAME_BUFFER_COLS 320
 #define FRAME_BUFFER_ROWS 240
 uint8_t image_rgb888_packed[FRAME_BUFFER_COLS * FRAME_BUFFER_ROWS * 3] = {0};
-uint8_t resized_image[FRAME_BUFFER_COLS * FRAME_BUFFER_ROWS * 3] = {0}; // buffer for resized image
+uint8_t resized_image[400 * 400 * 3] = {0}; // buffer for resized image
 
 using namespace ei::image::processing;
 
-int test_resize(fit_mode_t mode)
+int test_resize(fit_mode_t mode, const char* outputFileName, int desiredWidth, int desiredHeight)
 {
     // fill frame buffer with some example data... This is normally done by the camera.
     for (size_t row = 0; row < FRAME_BUFFER_ROWS; row++)
@@ -30,8 +30,6 @@ int test_resize(fit_mode_t mode)
     int b = create_bitmap_file("input.bmp", image_rgb888_packed, FRAME_BUFFER_COLS, FRAME_BUFFER_ROWS);
     printf("created input.bmp, result code: %d\n", b);
 
-    int desiredWidth = 200; // desired width for resized image
-    int desiredHeight = 200; // desired height for resized image
     int pixelSize = 3; // pixel size in bytes, 3 for RGB
 
     int res = resize_image_using_mode(
@@ -49,14 +47,25 @@ int test_resize(fit_mode_t mode)
         return res;
     }
 
-    b = create_bitmap_file("resized.bmp", resized_image, desiredWidth, desiredHeight);
-    printf("created resized.bmp, result code: %d\n", b);
+    b = create_bitmap_file(outputFileName, resized_image, desiredWidth, desiredHeight);
+    printf("created %s, result code: %d\n", outputFileName, b);
 
     return res;
 }
 
 int main() {
-    // test_resize(FIT_SHORTEST);
-    test_resize(FIT_LONGEST);
-    // test_resize(FIT_SHORTEST);
+    // This will crop to maintain aspect ratio
+    // Ie, no distortion
+    test_resize(FIT_SHORTEST, "shortest.bmp", 200,200);
+
+    // The following also avoid distortion, but by padding
+    // AKA letterboxing
+    // Letterboxes on top and bottom, like a movie
+    test_resize(FIT_LONGEST, "longest_fat.bmp", 200,200);
+    // Letterboxes on sides, AKA pillarboxing
+    test_resize(FIT_LONGEST, "longest_skinny.bmp", 400,200);
+
+    // No cropping or padding.
+    // Will distort the ratio of objects (length v width)
+    test_resize(SQUASH, "squash.bmp",200,200);
 }
