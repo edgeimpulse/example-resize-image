@@ -4,8 +4,10 @@
 // raw frame buffer from the camera
 #define FRAME_BUFFER_COLS 320
 #define FRAME_BUFFER_ROWS 240
-uint8_t image_rgb888_packed[FRAME_BUFFER_COLS * FRAME_BUFFER_ROWS * 3] = {0};
-uint8_t resized_image[400 * 400 * 3] = {0}; // buffer for resized image
+uint8_t image_rgb888_packed[400 * 400 * 3] = {0}; // oversize buffer for space for fit longest
+
+// Can also resize into a new buffer
+// uint8_t resized_image[400 * 400 * 3] = {0}; // buffer for resized image
 
 using namespace ei::image::processing;
 
@@ -36,7 +38,7 @@ int test_resize(fit_mode_t mode, const char* outputFileName, int desiredWidth, i
         image_rgb888_packed,
         FRAME_BUFFER_COLS,
         FRAME_BUFFER_ROWS,
-        resized_image,
+        image_rgb888_packed,
         desiredWidth,
         desiredHeight,
         pixelSize,
@@ -47,7 +49,7 @@ int test_resize(fit_mode_t mode, const char* outputFileName, int desiredWidth, i
         return res;
     }
 
-    b = create_bitmap_file(outputFileName, resized_image, desiredWidth, desiredHeight);
+    b = create_bitmap_file(outputFileName, image_rgb888_packed, desiredWidth, desiredHeight);
     printf("created %s, result code: %d\n", outputFileName, b);
 
     return res;
