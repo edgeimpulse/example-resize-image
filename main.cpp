@@ -52,6 +52,14 @@ int test_resize(fit_mode_t mode, const char* outputFileName, int desiredWidth, i
     b = create_bitmap_file(outputFileName, image_rgb888_packed, desiredWidth, desiredHeight);
     printf("created %s, result code: %d\n", outputFileName, b);
 
+    // for (int i = 0; i < desiredHeight; i++) {
+    //     for (int j = 0; j < desiredWidth; j++) {
+    //         int index = (i * desiredWidth + j) * 3;
+    //         printf("%d, %d, %d,", (int)image_rgb888_packed[index], (int)image_rgb888_packed[index + 1], (int)image_rgb888_packed[index + 2]);
+    //     }
+    //     printf("\n");
+    // }
+
     return res;
 }
 
